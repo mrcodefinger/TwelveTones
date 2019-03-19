@@ -42,7 +42,6 @@ $tones =  new ShuffleArray([
   "F",
   "G",
   new RandomValue(["Ab", "G#"]),
-  new RandomValue(["E#", "F"]),
   new RandomValue(["Bb", "A#"]),
   new RandomValue(["C#", "Db"]),
   new RandomValue(["D#", "Eb"]),
