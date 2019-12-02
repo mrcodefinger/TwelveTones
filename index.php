@@ -3,7 +3,7 @@
 /**
  * Class RandomValue
  */
-class RandomValue {
+final class RandomValue {
 	/**
 	 * @var array
 	 */
@@ -29,7 +29,7 @@ class RandomValue {
 /**
  * Class ShuffleArray
  */
-class ShuffleArray {
+final class ShuffleArray {
 
 	/**
 	 * @var array
