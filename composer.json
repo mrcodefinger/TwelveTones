@@ -1,6 +1,6 @@
 {
     "name": "mrcodefinger/12tones",
-    "description": "This script display all twelve tones in random order.",
+    "description": "This script displays all twelve tones in random order.",
     "type": "library",
     "version": "0.1.0",
     "require-dev": {
