@@ -19,7 +19,6 @@ final class ShuffleArray {
      */
     public function __construct( array $values ) {
         $this->values = $values;
-
     }
 
     /**
