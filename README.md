@@ -2,6 +2,14 @@
 
 This script displays all twelve tones in random order.
 
+Requires PHP 8.2 or later.
+
+```bash
+composer install
+composer test
+php index.php
+```
+
 Examples:
 
 ```

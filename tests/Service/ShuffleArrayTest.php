@@ -1,14 +1,16 @@
 <?php declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace MrCodefinger\TwelveTones\Tests\Service;
+
 use MrCodefinger\TwelveTones\Service\ShuffleArray;
+use PHPUnit\Framework\TestCase;
 
 final class ShuffleArrayTest extends TestCase
 {
-    public function testSortRandom()
+    public function testSortRandom(): void
     {
         $array = ['A', 'B', 'C', 'D', 'E'];
         $shuffleArray = new ShuffleArray($array);
-        $this->assertTrue(is_array($shuffleArray->getValue()));
+        $this->assertIsArray($shuffleArray->getValue());
     }
 }
