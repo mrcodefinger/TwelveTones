@@ -2,15 +2,7 @@
     "name": "mrcodefinger/twelvetones",
     "description": "This script displays all twelve tones in random order.",
     "type": "library",
-    "version": "0.1.0",
-    "autoload": {
-        "classmap": [
-            "src/"
-        ]
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.5"
-    },
+    "version": "0.2.0",
     "license": "MIT",
     "authors": [
         {
@@ -18,5 +10,23 @@
             "email": "post@gabrielserwas.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MrCodefinger\\TwelveTones\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MrCodefinger\\TwelveTones\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
 }

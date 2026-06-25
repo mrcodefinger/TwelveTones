@@ -1,13 +1,15 @@
 <?php declare(strict_types=1);
 
-use PHPUnit\Framework\TestCase;
+namespace MrCodefinger\TwelveTones\Tests\Service;
+
 use MrCodefinger\TwelveTones\Service\RandomValue;
+use PHPUnit\Framework\TestCase;
 
 final class RandomValueTest extends TestCase
 {
-    public function testGetRandomValue()
+    public function testGetRandomValue(): void
     {
         $array = ['A', 'B', 'C'];
-        $this->assertTrue(in_array(new RandomValue($array), $array));
+        $this->assertContains((string) new RandomValue($array), $array);
     }
 }

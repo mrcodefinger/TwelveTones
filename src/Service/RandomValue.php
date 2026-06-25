@@ -1,29 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MrCodefinger\TwelveTones\Service;
 
-/**
- * Class RandomValue
- */
-final class RandomValue {
-    /**
-     * @var array
-     */
-    private $values;
+final class RandomValue
+{
+    /** @var non-empty-list<string> */
+    private array $values;
 
-    /**
-     * RandomValue constructor.
-     *
-     * @param array $values
-     */
-    public function __construct( array $values ) {
+    /** @param non-empty-list<string> $values */
+    public function __construct(array $values)
+    {
         $this->values = $values;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString() {
-        return $this->values[ rand( 0, count( $this->values ) - 1 ) ];
+    public function __toString(): string
+    {
+        return $this->values[random_int(0, count($this->values) - 1)];
     }
 }

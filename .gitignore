@@ -1,2 +1,5 @@
 /vendor/
 .idea/
+.phpunit.cache/
+composer.phar
+composer-setup.php
