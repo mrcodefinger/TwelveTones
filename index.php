@@ -2,10 +2,11 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use MrCodefinger\TwelveTones\OrderMode;
 use MrCodefinger\TwelveTones\Service\RandomValue;
-use MrCodefinger\TwelveTones\Service\ShuffleArray;
+use MrCodefinger\TwelveTones\Service\TwelveTones;
 
-$tones = new ShuffleArray([
+$tones = new TwelveTones([
     'A',
     'B',
     'C',
@@ -18,6 +19,6 @@ $tones = new ShuffleArray([
     new RandomValue(['C#', 'Db']),
     new RandomValue(['D#', 'Eb']),
     new RandomValue(['F#', 'Gb']),
-]);
+], OrderMode::Random);
 
 echo $tones;

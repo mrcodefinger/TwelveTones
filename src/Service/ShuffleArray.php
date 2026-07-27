@@ -2,28 +2,14 @@
 
 namespace MrCodefinger\TwelveTones\Service;
 
-final class ShuffleArray
-{
-    /** @var list<string|RandomValue> */
-    private array $values;
+use MrCodefinger\TwelveTones\OrderMode;
 
+/** @deprecated Use TwelveTones instead */
+final class ShuffleArray extends TwelveTones
+{
     /** @param list<string|RandomValue> $values */
     public function __construct(array $values)
     {
-        $this->values = $values;
-    }
-
-    public function __toString(): string
-    {
-        return implode(' ', array_map('strval', $this->getValue()));
-    }
-
-    /** @return list<string|RandomValue> */
-    public function getValue(): array
-    {
-        $values = $this->values;
-        shuffle($values);
-
-        return $values;
+        parent::__construct($values, OrderMode::Random);
     }
 }
