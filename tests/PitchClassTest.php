@@ -33,4 +33,38 @@ final class PitchClassTest extends TestCase
             $this->assertSame(range(0, 11), $pitchClasses);
         }
     }
+
+    public function testIntervalCycleFromCMatchesCircleConstants(): void
+    {
+        $this->assertSame(PitchClass::CIRCLE_OF_FIFTHS, PitchClass::intervalCycle(0, 7));
+        $this->assertSame(PitchClass::CIRCLE_OF_FOURTHS, PitchClass::intervalCycle(0, 5));
+    }
+
+    public function testIntervalCycleConcatenatesRemainingCycles(): void
+    {
+        $this->assertSame(
+            [0, 2, 4, 6, 8, 10, 1, 3, 5, 7, 9, 11],
+            PitchClass::intervalCycle(0, 2),
+        );
+        $this->assertSame(
+            [0, 3, 6, 9, 1, 4, 7, 10, 2, 5, 8, 11],
+            PitchClass::intervalCycle(0, 3),
+        );
+        $this->assertSame(
+            [0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11],
+            PitchClass::intervalCycle(0, 4),
+        );
+    }
+
+    public function testIntervalCycleRotatesFromStart(): void
+    {
+        $this->assertSame(
+            [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5],
+            PitchClass::intervalCycle(6, 1),
+        );
+        $this->assertSame(
+            [7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5, 0],
+            PitchClass::intervalCycle(7, 7),
+        );
+    }
 }

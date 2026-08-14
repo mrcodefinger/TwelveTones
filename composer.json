@@ -1,8 +1,8 @@
 {
     "name": "mrcodefinger/twelvetones",
-    "description": "This script displays all twelve tones in random order.",
+    "description": "Twelve-tone sequences in random or interval order (chromatic, whole tone, thirds, fifths, fourths).",
     "type": "library",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "license": "MIT",
     "authors": [
         {

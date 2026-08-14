@@ -27,14 +27,14 @@ final class RandomValue
         return $this->format(OrderMode::Random);
     }
 
-    public function format(OrderMode $mode): string
+    public function format(OrderMode $mode, ?bool $useFlats = null): string
     {
         $pitchClass = PitchClass::fromString($this->values[0]);
 
-        return match ($mode) {
-            OrderMode::Random => $this->values[random_int(0, count($this->values) - 1)],
-            OrderMode::Fifths => PitchClass::toString($pitchClass, useFlats: false),
-            OrderMode::Fourths => PitchClass::toString($pitchClass, useFlats: true),
-        };
+        if ($mode === OrderMode::Random) {
+            return $this->values[random_int(0, count($this->values) - 1)];
+        }
+
+        return PitchClass::toString($pitchClass, $useFlats ?? $mode->prefersFlats());
     }
 }

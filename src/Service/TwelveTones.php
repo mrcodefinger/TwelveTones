@@ -11,9 +11,13 @@ final class TwelveTones
     private array $values;
 
     /** @param list<string|RandomValue> $values */
-    public function __construct(array $values, private OrderMode $order = OrderMode::Random)
-    {
+    public function __construct(
+        array $values,
+        private OrderMode $order = OrderMode::Random,
+        private string $start = 'C',
+    ) {
         $this->values = $values;
+        PitchClass::fromString($this->start);
     }
 
     public function __toString(): string
@@ -24,11 +28,13 @@ final class TwelveTones
     /** @return list<string> */
     public function getValue(): array
     {
-        $ordered = match ($this->order) {
-            OrderMode::Random => $this->shuffle($this->values),
-            OrderMode::Fifths => $this->sortByCircle($this->values, PitchClass::CIRCLE_OF_FIFTHS),
-            OrderMode::Fourths => $this->sortByCircle($this->values, PitchClass::CIRCLE_OF_FOURTHS),
-        };
+        $step = $this->order->step();
+        $ordered = $step === null
+            ? $this->shuffle($this->values)
+            : $this->sortByCircle(
+                $this->values,
+                PitchClass::intervalCycle(PitchClass::fromString($this->start), $step),
+            );
 
         return array_map(fn (string|RandomValue $tone): string => $this->format($tone), $ordered);
     }
@@ -71,9 +77,20 @@ final class TwelveTones
     private function format(string|RandomValue $tone): string
     {
         if ($tone instanceof RandomValue) {
-            return $tone->format($this->order);
+            return $tone->format($this->order, $this->useFlats());
         }
 
         return $tone;
+    }
+
+    private function useFlats(): bool
+    {
+        $accidental = substr($this->start, 1);
+
+        return match ($accidental) {
+            '#', '##' => false,
+            'b', 'bb' => true,
+            default => $this->order->prefersFlats(),
+        };
     }
 }

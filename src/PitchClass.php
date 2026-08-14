@@ -58,4 +58,44 @@ final class PitchClass
             ? self::FLAT_NAMES[$normalized]
             : self::SHARP_NAMES[$normalized];
     }
+
+    /**
+     * Build a 12-tone sequence by stepping `$step` semitones from `$start`.
+     * When the interval does not generate all twelve pitch classes, remaining
+     * cycles start at the next unused chromatic pitch.
+     *
+     * @return list<int>
+     */
+    public static function intervalCycle(int $start, int $step): array
+    {
+        $start = (($start % 12) + 12) % 12;
+        $step = (($step % 12) + 12) % 12;
+        if ($step === 0) {
+            throw new InvalidArgumentException('Step cannot be a multiple of 12.');
+        }
+
+        $visited = [];
+        $result = [];
+        $cycleStart = $start;
+
+        while (count($result) < 12) {
+            $pc = $cycleStart;
+            do {
+                $result[] = $pc;
+                $visited[$pc] = true;
+                $pc = ($pc + $step) % 12;
+            } while ($pc !== $cycleStart);
+
+            if (count($result) >= 12) {
+                break;
+            }
+
+            $cycleStart = ($cycleStart + 1) % 12;
+            while (isset($visited[$cycleStart])) {
+                $cycleStart = ($cycleStart + 1) % 12;
+            }
+        }
+
+        return $result;
+    }
 }
