@@ -67,4 +67,24 @@ final class PitchClassTest extends TestCase
             PitchClass::intervalCycle(7, 7),
         );
     }
+
+    public function testIntervalCycleAcceptsNegativeSteps(): void
+    {
+        $this->assertSame(
+            [0, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+            PitchClass::intervalCycle(0, -1),
+        );
+        $this->assertSame(
+            [0, 10, 8, 6, 4, 2, 1, 11, 9, 7, 5, 3],
+            PitchClass::intervalCycle(0, -2),
+        );
+        $this->assertSame(
+            [0, 9, 6, 3, 1, 10, 7, 4, 2, 11, 8, 5],
+            PitchClass::intervalCycle(0, -3),
+        );
+        $this->assertSame(
+            [0, 8, 4, 1, 9, 5, 2, 10, 6, 3, 11, 7],
+            PitchClass::intervalCycle(0, -4),
+        );
+    }
 }

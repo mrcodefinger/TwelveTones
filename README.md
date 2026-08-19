@@ -13,6 +13,7 @@ php index.php
 ### Usage
 
 ```php
+use MrCodefinger\TwelveTones\Direction;
 use MrCodefinger\TwelveTones\OrderMode;
 use MrCodefinger\TwelveTones\Service\RandomValue;
 use MrCodefinger\TwelveTones\Service\TwelveTones;
@@ -35,15 +36,19 @@ $tones = new TwelveTones([
 
 ### Order modes
 
-An optional `$start` note (default `C`) rotates the sequence so it begins on that pitch. Random order ignores `$start`.
+An optional `$start` note (default `C`) rotates the sequence so it begins on that pitch. Random order ignores `$start`. An optional `$direction` (default `Direction::Ascending`) reverses the interval step for descending practice; remaining cycles still start on the next unused chromatic pitch.
 
 | Mode | Example from C |
 |------|----------------|
 | `OrderMode::Random` | shuffled, enharmonic spellings random |
 | `OrderMode::Chromatic` | `C C# D D# E F F# G G# A A# B` |
+| `OrderMode::Chromatic` descending | `C B A# A G# G F# F E D# D C#` |
 | `OrderMode::WholeTone` | `C D E F# G# A# C# D# F G A B` |
+| `OrderMode::WholeTone` descending | `C A# G# F# E D C# B A G F D#` |
 | `OrderMode::MinorThird` | `C Eb Gb A Db E G Bb D F Ab B` |
+| `OrderMode::MinorThird` descending | `C A Gb Eb Db Bb G E D B Ab F` |
 | `OrderMode::MajorThird` | `C E G# C# F A D F# A# D# G B` |
+| `OrderMode::MajorThird` descending | `C G# E C# A F D A# F# D# B G` |
 | `OrderMode::Fifths` | `C G D A E B F# C# G# D# A# F` |
 | `OrderMode::Fourths` | `C F Bb Eb Ab Db Gb B E A D G` |
 
@@ -52,6 +57,8 @@ $tones = new TwelveTones([...], OrderMode::Fifths);
 echo $tones;
 
 $fromEb = new TwelveTones([...], OrderMode::Chromatic, start: 'Eb');
+
+$descending = new TwelveTones([...], OrderMode::MinorThird, direction: Direction::Descending);
 
 foreach ($tones->getValue() as $tone) {
     echo $tone . ' ';

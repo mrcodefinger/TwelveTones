@@ -2,6 +2,7 @@
 
 namespace MrCodefinger\TwelveTones\Service;
 
+use MrCodefinger\TwelveTones\Direction;
 use MrCodefinger\TwelveTones\OrderMode;
 use MrCodefinger\TwelveTones\PitchClass;
 
@@ -15,6 +16,7 @@ final class TwelveTones
         array $values,
         private OrderMode $order = OrderMode::Random,
         private string $start = 'C',
+        private Direction $direction = Direction::Ascending,
     ) {
         $this->values = $values;
         PitchClass::fromString($this->start);
@@ -29,6 +31,9 @@ final class TwelveTones
     public function getValue(): array
     {
         $step = $this->order->step();
+        if ($step !== null && $this->direction === Direction::Descending) {
+            $step = -$step;
+        }
         $ordered = $step === null
             ? $this->shuffle($this->values)
             : $this->sortByCircle(

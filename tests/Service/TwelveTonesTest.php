@@ -2,6 +2,7 @@
 
 namespace MrCodefinger\TwelveTones\Tests\Service;
 
+use MrCodefinger\TwelveTones\Direction;
 use MrCodefinger\TwelveTones\OrderMode;
 use MrCodefinger\TwelveTones\Service\RandomValue;
 use MrCodefinger\TwelveTones\Service\TwelveTones;
@@ -131,5 +132,54 @@ final class TwelveTonesTest extends TestCase
             ['Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C', 'Db', 'D'],
             $tones->getValue(),
         );
+    }
+
+    public function testChromaticDescendingFromCUsesSharps(): void
+    {
+        $tones = new TwelveTones($this->createToneList(), OrderMode::Chromatic, direction: Direction::Descending);
+
+        $this->assertSame(
+            ['C', 'B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#'],
+            $tones->getValue(),
+        );
+    }
+
+    public function testWholeToneDescendingFromCConcatenatesBothScales(): void
+    {
+        $tones = new TwelveTones($this->createToneList(), OrderMode::WholeTone, direction: Direction::Descending);
+
+        $this->assertSame(
+            ['C', 'A#', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A', 'G', 'F', 'D#'],
+            $tones->getValue(),
+        );
+    }
+
+    public function testMinorThirdDescendingFromCUsesFlats(): void
+    {
+        $tones = new TwelveTones($this->createToneList(), OrderMode::MinorThird, direction: Direction::Descending);
+
+        $this->assertSame(
+            ['C', 'A', 'Gb', 'Eb', 'Db', 'Bb', 'G', 'E', 'D', 'B', 'Ab', 'F'],
+            $tones->getValue(),
+        );
+    }
+
+    public function testMajorThirdDescendingFromCUsesSharps(): void
+    {
+        $tones = new TwelveTones($this->createToneList(), OrderMode::MajorThird, direction: Direction::Descending);
+
+        $this->assertSame(
+            ['C', 'G#', 'E', 'C#', 'A', 'F', 'D', 'A#', 'F#', 'D#', 'B', 'G'],
+            $tones->getValue(),
+        );
+    }
+
+    public function testRandomOrderIgnoresDescendingDirection(): void
+    {
+        $tones = new TwelveTones($this->createToneList(), OrderMode::Random, direction: Direction::Descending);
+        $value = $tones->getValue();
+
+        $this->assertCount(12, $value);
+        $this->assertCount(12, array_unique($value));
     }
 }
