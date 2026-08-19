@@ -59,6 +59,45 @@ final class PitchClass
             : self::SHARP_NAMES[$normalized];
     }
 
+    public static function transpose(int $pitchClass, int $semitones): int
+    {
+        return ((($pitchClass + $semitones) % 12) + 12) % 12;
+    }
+
+    /**
+     * Transpose a single note name. Without an explicit `$useFlats` the result
+     * keeps the accidental style of `$note`; naturals fall back to sharps.
+     */
+    public static function transposeName(string $note, int $semitones, ?bool $useFlats = null): string
+    {
+        return self::toString(
+            self::transpose(self::fromString($note), $semitones),
+            $useFlats ?? self::accidentalPrefersFlats($note) ?? false,
+        );
+    }
+
+    /**
+     * Transpose a whole sequence. Without an explicit `$useFlats` every note
+     * keeps its own accidental style, and naturals follow the style of the
+     * sequence: flats when it spells flats and no sharps, sharps otherwise.
+     *
+     * @param list<string> $notes
+     * @return list<string>
+     */
+    public static function transposeSequence(array $notes, int $semitones, ?bool $useFlats = null): array
+    {
+        $fallback = $useFlats ?? self::sequencePrefersFlats($notes);
+
+        return array_map(
+            static fn (string $note): string => self::transposeName(
+                $note,
+                $semitones,
+                $useFlats ?? self::accidentalPrefersFlats($note) ?? $fallback,
+            ),
+            $notes,
+        );
+    }
+
     /**
      * Build a 12-tone sequence by stepping `$step` semitones from `$start`.
      * When the interval does not generate all twelve pitch classes, remaining
@@ -97,5 +136,33 @@ final class PitchClass
         }
 
         return $result;
+    }
+
+    /** Null when the note carries no accidental. */
+    private static function accidentalPrefersFlats(string $note): ?bool
+    {
+        return match (substr($note, 1)) {
+            'b', 'bb' => true,
+            '#', '##' => false,
+            default => null,
+        };
+    }
+
+    /** @param list<string> $notes */
+    private static function sequencePrefersFlats(array $notes): bool
+    {
+        $flats = false;
+
+        foreach ($notes as $note) {
+            $prefersFlats = self::accidentalPrefersFlats($note);
+            if ($prefersFlats === false) {
+                return false;
+            }
+            if ($prefersFlats === true) {
+                $flats = true;
+            }
+        }
+
+        return $flats;
     }
 }

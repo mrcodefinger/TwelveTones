@@ -67,6 +67,24 @@ foreach ($tones->getValue() as $tone) {
 
 Intervals that do not visit all twelve pitch classes in one cycle (whole tone, minor third, major third) concatenate the remaining cycles so every key still appears.
 
+### Transposition
+
+`PitchClass::transposeSequence()` shifts a finished sequence by any interval within the octave, which is what a second reference row for transposing instruments needs. Since only pitch classes are involved, an interval and its inversion produce the same row: a major sixth up equals a minor third down.
+
+```php
+use MrCodefinger\TwelveTones\Interval;
+use MrCodefinger\TwelveTones\PitchClass;
+
+$row = $tones->getValue();
+
+$forBbInstruments = PitchClass::transposeSequence($row, Interval::MajorSecond->value);
+$downAMinorThird = PitchClass::transposeSequence($row, -Interval::MinorThird->value);
+```
+
+Without an explicit `$useFlats` every note keeps its own accidental style, and naturals follow the sequence: flats when it spells flats and no sharps, sharps otherwise. `PitchClass::transposeName()` does the same for one note name, `PitchClass::transpose()` works on pitch class integers, and `Interval::inverted()` returns the complement to the octave.
+
+Instrument transpositions in interval terms: Bb instruments `Interval::MajorSecond`, Eb instruments `Interval::MajorSixth`, F instruments `Interval::PerfectFifth`.
+
 `ShuffleArray` is still available as a deprecated alias for random order.
 
 [https://twelvetones.eu/](https://twelvetones.eu/)

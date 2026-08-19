@@ -2,7 +2,7 @@
     "name": "mrcodefinger/twelvetones",
     "description": "Twelve-tone sequences in random or interval order (chromatic, whole tone, thirds, fifths, fourths).",
     "type": "library",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "license": "MIT",
     "authors": [
         {
