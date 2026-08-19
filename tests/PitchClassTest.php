@@ -76,11 +76,23 @@ final class PitchClassTest extends TestCase
         $this->assertSame(0, PitchClass::transpose(0, 12));
     }
 
-    public function testTransposeNameKeepsTheAccidentalStyleOfTheSourceNote(): void
+    public function testTransposeNameSpellsTheInterval(): void
     {
+        $this->assertSame('Bb', PitchClass::transposeName('G', 3));
+        $this->assertSame('Eb', PitchClass::transposeName('C', 3));
+        $this->assertSame('Ab', PitchClass::transposeName('F', 3));
+        $this->assertSame('D', PitchClass::transposeName('B', 3));
+        $this->assertSame('E', PitchClass::transposeName('C#', 3));
         $this->assertSame('Eb', PitchClass::transposeName('Db', 2));
         $this->assertSame('D#', PitchClass::transposeName('C#', 2));
         $this->assertSame('C#', PitchClass::transposeName('B', 2));
+    }
+
+    public function testTransposeNameDescendingMinorThird(): void
+    {
+        $this->assertSame('E', PitchClass::transposeName('G', -3));
+        $this->assertSame('A', PitchClass::transposeName('C', -3));
+        $this->assertSame('F#', PitchClass::transposeName('A', -3));
     }
 
     public function testTransposeNameHonoursExplicitSpelling(): void
@@ -89,15 +101,18 @@ final class PitchClassTest extends TestCase
         $this->assertSame('Eb', PitchClass::transposeName('C#', 2, useFlats: true));
     }
 
-    public function testTransposeSequenceSpellsNaturalsLikeTheSequence(): void
+    public function testTransposeSequenceSpellsEachNoteAsTheInterval(): void
     {
         $this->assertSame(
-            ['D', 'Eb', 'F', 'Gb'],
+            ['D', 'Eb', 'F', 'F#'],
             PitchClass::transposeSequence(['C', 'Db', 'Eb', 'E'], 2),
         );
         $this->assertSame(
-            ['D', 'D#', 'F', 'F#'],
-            PitchClass::transposeSequence(['C', 'C#', 'D#', 'E'], 2),
+            ['Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'C', 'C#', 'D'],
+            PitchClass::transposeSequence(
+                ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+                3,
+            ),
         );
     }
 

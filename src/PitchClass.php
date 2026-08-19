@@ -26,6 +26,38 @@ final class PitchClass
         'B' => 11,
     ];
 
+    /** Diatonic steps for each ascending interval in semitones. Tritone is an augmented fourth. */
+    private const ASCENDING_STEPS = [0, 1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6];
+
+    /**
+     * Transpose a single note name. Without an explicit `$useFlats` the result
+     * is spelled as that interval: a minor third from G is Bb, not A#.
+     */
+    public static function transposeName(string $note, int $semitones, ?bool $useFlats = null): string
+    {
+        $target = self::transpose(self::fromString($note), $semitones);
+        if ($useFlats !== null) {
+            return self::toString($target, $useFlats);
+        }
+
+        return self::spellInterval($note, $semitones, $target);
+    }
+
+    /**
+     * Transpose a whole sequence. Without an explicit `$useFlats` every note
+     * is spelled as the given interval from its source name.
+     *
+     * @param list<string> $notes
+     * @return list<string>
+     */
+    public static function transposeSequence(array $notes, int $semitones, ?bool $useFlats = null): array
+    {
+        return array_map(
+            static fn (string $note): string => self::transposeName($note, $semitones, $useFlats),
+            $notes,
+        );
+    }
+
     public static function fromString(string $note): int
     {
         if ($note === '') {
@@ -62,40 +94,6 @@ final class PitchClass
     public static function transpose(int $pitchClass, int $semitones): int
     {
         return ((($pitchClass + $semitones) % 12) + 12) % 12;
-    }
-
-    /**
-     * Transpose a single note name. Without an explicit `$useFlats` the result
-     * keeps the accidental style of `$note`; naturals fall back to sharps.
-     */
-    public static function transposeName(string $note, int $semitones, ?bool $useFlats = null): string
-    {
-        return self::toString(
-            self::transpose(self::fromString($note), $semitones),
-            $useFlats ?? self::accidentalPrefersFlats($note) ?? false,
-        );
-    }
-
-    /**
-     * Transpose a whole sequence. Without an explicit `$useFlats` every note
-     * keeps its own accidental style, and naturals follow the style of the
-     * sequence: flats when it spells flats and no sharps, sharps otherwise.
-     *
-     * @param list<string> $notes
-     * @return list<string>
-     */
-    public static function transposeSequence(array $notes, int $semitones, ?bool $useFlats = null): array
-    {
-        $fallback = $useFlats ?? self::sequencePrefersFlats($notes);
-
-        return array_map(
-            static fn (string $note): string => self::transposeName(
-                $note,
-                $semitones,
-                $useFlats ?? self::accidentalPrefersFlats($note) ?? $fallback,
-            ),
-            $notes,
-        );
     }
 
     /**
@@ -138,31 +136,35 @@ final class PitchClass
         return $result;
     }
 
-    /** Null when the note carries no accidental. */
-    private static function accidentalPrefersFlats(string $note): ?bool
+    /**
+     * Spell `$target` as the diatonic interval of `$semitones` from `$note`.
+     * A descending tritone is written as a diminished fifth.
+     */
+    private static function spellInterval(string $note, int $semitones, int $target): string
     {
-        return match (substr($note, 1)) {
-            'b', 'bb' => true,
-            '#', '##' => false,
-            default => null,
-        };
-    }
-
-    /** @param list<string> $notes */
-    private static function sequencePrefersFlats(array $notes): bool
-    {
-        $flats = false;
-
-        foreach ($notes as $note) {
-            $prefersFlats = self::accidentalPrefersFlats($note);
-            if ($prefersFlats === false) {
-                return false;
-            }
-            if ($prefersFlats === true) {
-                $flats = true;
-            }
+        $interval = ((abs($semitones) % 12) + 12) % 12;
+        if ($interval === 0) {
+            return $note;
         }
 
-        return $flats;
+        $letters = array_keys(self::NOTE_OFFSETS);
+        $letterIndex = array_search($note[0], $letters, true);
+        $steps = self::ASCENDING_STEPS[$interval];
+        if ($semitones < 0 && $interval === 6) {
+            $steps = 4;
+        }
+
+        $direction = $semitones < 0 ? -1 : 1;
+        $destLetter = $letters[($letterIndex + $direction * $steps + 7) % 7];
+        $accidental = (($target - self::NOTE_OFFSETS[$destLetter] + 6) % 12) - 6;
+
+        return match ($accidental) {
+            -2 => $destLetter . 'bb',
+            -1 => $destLetter . 'b',
+            0 => $destLetter,
+            1 => $destLetter . '#',
+            2 => $destLetter . '##',
+            default => self::toString($target, $accidental < 0),
+        };
     }
 }

@@ -81,7 +81,7 @@ $forBbInstruments = PitchClass::transposeSequence($row, Interval::MajorSecond->v
 $downAMinorThird = PitchClass::transposeSequence($row, -Interval::MinorThird->value);
 ```
 
-Without an explicit `$useFlats` every note keeps its own accidental style, and naturals follow the sequence: flats when it spells flats and no sharps, sharps otherwise. `PitchClass::transposeName()` does the same for one note name, `PitchClass::transpose()` works on pitch class integers, and `Interval::inverted()` returns the complement to the octave.
+Without an explicit `$useFlats` each destination is spelled as that interval from its source name: a minor third from G is Bb, not A#. Pass `$useFlats` to force the canonical chromatic names instead. `PitchClass::transposeName()` does the same for one note name, `PitchClass::transpose()` works on pitch class integers, and `Interval::inverted()` returns the complement to the octave.
 
 Instrument transpositions in interval terms: Bb instruments `Interval::MajorSecond`, Eb instruments `Interval::MajorSixth`, F instruments `Interval::PerfectFifth`.
 
