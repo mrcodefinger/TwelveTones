@@ -95,7 +95,21 @@ final class TwelveTones
         return match ($accidental) {
             '#', '##' => false,
             'b', 'bb' => true,
-            default => $this->order->prefersFlats(),
+            default => $this->prefersFlatsForOrder(),
         };
+    }
+
+    private function prefersFlatsForOrder(): bool
+    {
+        $interval = match ($this->order) {
+            OrderMode::Chromatic, OrderMode::WholeTone, OrderMode::MinorThird, OrderMode::MajorThird => true,
+            default => false,
+        };
+
+        if ($interval) {
+            return $this->direction === Direction::Descending;
+        }
+
+        return $this->order->prefersFlats();
     }
 }

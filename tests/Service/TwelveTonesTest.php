@@ -84,12 +84,12 @@ final class TwelveTonesTest extends TestCase
         );
     }
 
-    public function testMinorThirdOrderFromCUsesFlats(): void
+    public function testMinorThirdOrderFromCUsesSharps(): void
     {
         $tones = new TwelveTones($this->createToneList(), OrderMode::MinorThird);
 
         $this->assertSame(
-            ['C', 'Eb', 'Gb', 'A', 'Db', 'E', 'G', 'Bb', 'D', 'F', 'Ab', 'B'],
+            ['C', 'D#', 'F#', 'A', 'C#', 'E', 'G', 'A#', 'D', 'F', 'G#', 'B'],
             $tones->getValue(),
         );
     }
@@ -134,22 +134,22 @@ final class TwelveTonesTest extends TestCase
         );
     }
 
-    public function testChromaticDescendingFromCUsesSharps(): void
+    public function testChromaticDescendingFromCUsesFlats(): void
     {
         $tones = new TwelveTones($this->createToneList(), OrderMode::Chromatic, direction: Direction::Descending);
 
         $this->assertSame(
-            ['C', 'B', 'A#', 'A', 'G#', 'G', 'F#', 'F', 'E', 'D#', 'D', 'C#'],
+            ['C', 'B', 'Bb', 'A', 'Ab', 'G', 'Gb', 'F', 'E', 'Eb', 'D', 'Db'],
             $tones->getValue(),
         );
     }
 
-    public function testWholeToneDescendingFromCConcatenatesBothScales(): void
+    public function testWholeToneDescendingFromCUsesFlats(): void
     {
         $tones = new TwelveTones($this->createToneList(), OrderMode::WholeTone, direction: Direction::Descending);
 
         $this->assertSame(
-            ['C', 'A#', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A', 'G', 'F', 'D#'],
+            ['C', 'Bb', 'Ab', 'Gb', 'E', 'D', 'Db', 'B', 'A', 'G', 'F', 'Eb'],
             $tones->getValue(),
         );
     }
@@ -164,12 +164,12 @@ final class TwelveTonesTest extends TestCase
         );
     }
 
-    public function testMajorThirdDescendingFromCUsesSharps(): void
+    public function testMajorThirdDescendingFromCUsesFlats(): void
     {
         $tones = new TwelveTones($this->createToneList(), OrderMode::MajorThird, direction: Direction::Descending);
 
         $this->assertSame(
-            ['C', 'G#', 'E', 'C#', 'A', 'F', 'D', 'A#', 'F#', 'D#', 'B', 'G'],
+            ['C', 'Ab', 'E', 'Db', 'A', 'F', 'D', 'Bb', 'Gb', 'Eb', 'B', 'G'],
             $tones->getValue(),
         );
     }
