@@ -68,6 +68,65 @@ final class PitchClassTest extends TestCase
         );
     }
 
+    public function testTransposeWrapsAroundTheOctave(): void
+    {
+        $this->assertSame(2, PitchClass::transpose(0, 2));
+        $this->assertSame(1, PitchClass::transpose(11, 2));
+        $this->assertSame(9, PitchClass::transpose(0, -3));
+        $this->assertSame(0, PitchClass::transpose(0, 12));
+    }
+
+    public function testTransposeNameKeepsTheAccidentalStyleOfTheSourceNote(): void
+    {
+        $this->assertSame('Eb', PitchClass::transposeName('Db', 2));
+        $this->assertSame('D#', PitchClass::transposeName('C#', 2));
+        $this->assertSame('C#', PitchClass::transposeName('B', 2));
+    }
+
+    public function testTransposeNameHonoursExplicitSpelling(): void
+    {
+        $this->assertSame('D#', PitchClass::transposeName('Db', 2, useFlats: false));
+        $this->assertSame('Eb', PitchClass::transposeName('C#', 2, useFlats: true));
+    }
+
+    public function testTransposeSequenceSpellsNaturalsLikeTheSequence(): void
+    {
+        $this->assertSame(
+            ['D', 'Eb', 'F', 'Gb'],
+            PitchClass::transposeSequence(['C', 'Db', 'Eb', 'E'], 2),
+        );
+        $this->assertSame(
+            ['D', 'D#', 'F', 'F#'],
+            PitchClass::transposeSequence(['C', 'C#', 'D#', 'E'], 2),
+        );
+    }
+
+    public function testTransposeSequenceKeepsMixedSpellingsPerNote(): void
+    {
+        $this->assertSame(
+            ['Eb', 'D#', 'D'],
+            PitchClass::transposeSequence(['Db', 'C#', 'C'], 2),
+        );
+    }
+
+    public function testTransposeSequenceHonoursExplicitSpelling(): void
+    {
+        $this->assertSame(
+            ['Eb', 'Eb', 'D'],
+            PitchClass::transposeSequence(['Db', 'C#', 'C'], 2, useFlats: true),
+        );
+    }
+
+    public function testTransposeSequenceTreatsInvertedIntervalsAsEqual(): void
+    {
+        $row = ['C', 'D', 'E', 'F#', 'G#', 'A#'];
+
+        $this->assertSame(
+            PitchClass::transposeSequence($row, 9),
+            PitchClass::transposeSequence($row, -3),
+        );
+    }
+
     public function testIntervalCycleAcceptsNegativeSteps(): void
     {
         $this->assertSame(
